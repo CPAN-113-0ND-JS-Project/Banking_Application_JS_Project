@@ -1,0 +1,21 @@
+{
+    "name": "banking_application",
+    "version": "1.0.0",
+    "main": "src_codes/app.js",
+    "scripts": {
+      "start": "node src_codes/app.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/CPAN-113-0ND-JS-Project/Banking_Application_JS_Project.git"
+    },
+    "bugs": {
+        "url": "https://github.com/CPAN-113-0ND-JS-Project/Banking_Application_JS_Project/issues"
+    },
+    "devDependencies": {},
+    "author": "",
+    "license": "MIT",
+    "keywords": [],
+    "description": "",
+    "homepage": "https://github.com/CPAN-113-0ND-JS-Project"
+  }
