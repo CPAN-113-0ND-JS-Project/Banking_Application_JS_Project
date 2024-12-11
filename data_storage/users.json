@@ -1,0 +1,19 @@
+{
+    "users": [ {
+        "user1": {
+            "email": "john.doe@gmail.com",
+            "PIN": 1029,
+            "Balance": 100.00
+        },
+        "user2": {
+            "email": "jane.doe@gmail.com",
+            "PIN": 1029,
+            "Balance": 150.00
+        },
+        "user3": {
+            "email": "jack.nguyen@gmail.com",
+            "PIN": 1029,
+            "Balance": 8219.35
+        }
+    } ]
+}
