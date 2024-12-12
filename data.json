@@ -1,18 +1,32 @@
 {
   "users": [
     {
-      "email": "user1@example.com",
-      "pin": "1234",
-      "balance": 500,
+      "email": "jane_hoses@gmail.com",
+      "pin": "7824",
+      "balance": 500.00,
       "failedAttempts": 0,
-      "locked": false
+      "isLocked": false
     },
     {
       "email": "elijahp558@gmail.com",
       "pin": "1234",
-      "balance": 0,
+      "balance": 784.00,
       "failedAttempts": 0,
-      "locked": false
+      "isLocked": false
+    },
+    {
+      "email": "ketchup_mayo333@gmail.com",
+      "pin": "9827",
+      "balance": 347.99,
+      "failedAttempts": 0,
+      "isLocked": false
+    },
+    {
+      "email": "jaycob_apply@gmail.com",
+      "pin": "4763",
+      "balance": 283.38,
+      "failedAttempts": 0,
+      "isLocked": false
     }
   ]
 }
