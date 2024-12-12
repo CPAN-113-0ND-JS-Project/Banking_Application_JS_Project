@@ -2,8 +2,9 @@
     "name": "banking_application",
     "version": "1.0.0",
     "main": "src_codes/app.js",
+    "type": "commonjs",
     "scripts": {
-        "start": "node src_codes/app.js"
+        "start": "node app.js"
     },
     "repository": {
         "type": "git",
