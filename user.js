@@ -17,9 +17,7 @@ class User {
             return false;
         }
 
-        var promptInputPin = parseInt(prompt("Enter your PIN: "));
-
-        if (this.pin !== promptInputPin) {
+        if (this.pin !== pin) {
             this.failedAttempts += 1;
             console.log();
             console.error("Incorrect PIN input. Please try again.");
