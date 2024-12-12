@@ -22,9 +22,3 @@
         "prompt-sync": "^4.2.0"
     }
 }
-
-    "homepage": "https://github.com/CPAN-113-0ND-JS-Project",
-    "dependencies": {
-        "prompt-sync": "^4.2.0"
-    }
-}
