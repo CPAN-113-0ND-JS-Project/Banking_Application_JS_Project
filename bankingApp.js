@@ -1,6 +1,6 @@
 const fs = require('fs');
 const User = require('./user');
-const readline = require('readline');
+const prompt = require('prompt-sync')({ sigint: true });
 
 class BankingApp {
     constructor() {
@@ -17,7 +17,7 @@ class BankingApp {
                 u => new User(u.email, u.pin, u.balance)
             );
         } catch (error) {
-            console.log('No previous data found. Starting fresh.');
+            console.log("No previous data found. Starting fresh.");
         }
     }
 
@@ -28,7 +28,7 @@ class BankingApp {
                 pin: u.pin,
                 balance: u.balance,
                 failedAttempts: u.failedAttempts,
-                locked: u.locked
+                locked: u.isLocked
             }))
         };
         fs.writeFileSync('data.json', JSON.stringify(data, null, 2));
@@ -38,73 +38,96 @@ class BankingApp {
         let user = this.users.find(u => u.email === email);
 
         if (!user) {
-            // Create a new user if email doesn't exist
-            console.log('Email not found. Creating a new account...');
-            user = new User(email, pin, 0); // New user starts with a 0 balance
+            console.log("Email not found. Creating a new account...");
+            user = new User(email, pin, 0); 
             this.users.push(user);
             this.saveData();
             this.currentUser = user;
             return true;
         }
 
-        if (user.authenticate(pin)) {
-            this.currentUser = user;
-            return true;
+        let attempts = 0
+
+        while (attempts <= 3) {
+            if (user.authenticate(pin)) {
+                this.currentUser = user;
+                return true;
+            }
+            attempts++;
+            if (attempts <= 3) {
+                pin = prompt("Incorrect PIN. Try again: "); 
+            }
         }
 
-        console.log('Incorrect PIN.');
+        console.error("Too many failed attempts. Forcing user out.")
+
+        if (attempts >= 10)  {
+            console.error("Too many failed attempts has been attempted. Locking user out...")
+        }
+
         return false;
     }
 
     mainMenu() {
-        console.log('\nMain Menu:');
-        console.log('1. View Balance');
-        console.log('2. Deposit Funds');
-        console.log('3. Withdraw Funds');
-        console.log('4. Exit');
+        console.log();
+        console.log("   Main Menu:");
+        console.log();
+        console.log("1. Withdraw Funds");
+        console.log("2. Deposit Funds");
+        console.log("3. View Balance");
+        console.log("4. Send E-Transfer");
+        console.log("5. Accept E-Transfer");
+        console.log("6. Change PIN");
+        console.log("7. Exit");
+        console.log();
     }
 
-    handleUserInput(choice) {
-        switch (choice) {
-            case '1':
-                console.log(`Your balance is: $${this.currentUser.viewBalance()}`);
+    handleUserInput() {
+
+        var promptChoice = parseFloat(prompt("Enter a number from [1-7]: "))
+
+        switch (promptChoice) {
+            case 1: 
+                this.currentUser.withdraw();
                 break;
-            case '2':
-                console.log('Enter amount to deposit:');
+            case 2: 
+                this.currentUser.deposit();
                 break;
-            case '3':
-                console.log('Enter amount to withdraw:');
+            case 3: 
+                this.currentUser.viewBalance();
                 break;
-            case '4':
-                console.log('Exiting...');
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6: 
+                break;
+            case 7:  
+                console.log();
+                console.log("Data has been changed and saved.")
+                console.log("Exiting now...");
                 this.saveData();
                 process.exit(0);
+                break;
             default:
-                console.log('Invalid choice. Please try again.');
+                console.log();
+                console.error("Invalid input. Please try again.");
+                break;
         }
+
+        this.mainMenu();
+        this.handleUserInput();
     }
 
     async start() {
-        const rl = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout
-        });
+        const email = prompt("Enter email: ");
+        const pin = prompt("Enter PIN: ");
 
-        rl.question('Enter email: ', email => {
-            rl.question('Enter PIN: ', pin => {
-                if (this.authenticateUser(email, pin)) {
-                    console.log('Login successful!');
-                    this.mainMenu();
-                    rl.question('Enter your choice: ', choice => {
-                        this.handleUserInput(choice);
-                        rl.close();
-                    });
-                } else {
-                    console.log('Invalid email or PIN.');
-                    rl.close();
-                }
-            });
-        });
+        if (this.authenticateUser(email, pin)) {
+            console.log("Login successful!");
+            this.mainMenu();
+            this.handleUserInput();
+        }
     }
 }
 

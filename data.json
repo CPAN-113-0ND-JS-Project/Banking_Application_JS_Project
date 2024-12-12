@@ -3,30 +3,30 @@
     {
       "email": "jane_hoses@gmail.com",
       "pin": "7824",
-      "balance": 500.00,
+      "balance": 500,
       "failedAttempts": 0,
-      "isLocked": false
+      "locked": false
     },
     {
       "email": "elijahp558@gmail.com",
       "pin": "1234",
-      "balance": 784.00,
+      "balance": 784,
       "failedAttempts": 0,
-      "isLocked": false
+      "locked": false
     },
     {
       "email": "ketchup_mayo333@gmail.com",
       "pin": "9827",
       "balance": 347.99,
       "failedAttempts": 0,
-      "isLocked": false
+      "locked": false
     },
     {
       "email": "jaycob_apply@gmail.com",
       "pin": "4763",
       "balance": 283.38,
       "failedAttempts": 0,
-      "isLocked": false
+      "locked": false
     }
   ]
 }

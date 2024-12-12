@@ -9,7 +9,7 @@ class User {
         this.isLocked = false;
     }
 
-    authenticate() {
+    authenticate(pin) {
 
         if (this.isLocked) {
             console.log();
@@ -17,23 +17,19 @@ class User {
             return false;
         }
 
-        var promptInputPin = parseInt(prompt("Enter your PIN: "));
-
-        if (this.pin !== promptInputPin) {
+        if (this.pin !== pin) {
             this.failedAttempts += 1;
             console.log();
-            console.error("Incorrect PIN input. Please try again.");
-            if (this.failedAttempts >= 3) {
+            if (this.failedAttempts >= 10) {
                 this.isLocked = true; 
                 console.log();
-                console.error("You have failed too many attempts... User has been locked out. Your session has been forcibly stopped.");
+                console.error("Too many failed attempts has been attempted... Locking user out.")
             }
             return false;
         }
 
         this.failedAttempts = 0;
         return true;
-
     }
 
     viewBalance() {
