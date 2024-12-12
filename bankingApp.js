@@ -63,6 +63,8 @@ class BankingApp {
 
         if (attempts >= 10)  {
             console.error("Too many failed attempts has been attempted. Locking user out...")
+            user.isLocked = true;
+            this.saveData();
         }
 
         return false;
