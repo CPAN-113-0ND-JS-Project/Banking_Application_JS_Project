@@ -3,10 +3,27 @@
     {
       "email": "jane_hoses@gmail.com",
       "pin": "7824",
-      "balance": 500,
+      "balance": 485,
       "failedAttempts": 0,
       "failedAttemptsRow": 0,
-      "isLocked": false
+      "isLocked": false,
+      "securityQuestions": [
+        {
+          "question": "What is your pet's name?",
+          "answer": "Fluffy"
+        }
+      ],
+      "transfers": [
+        {
+          "type": "sent",
+          "recipientEmail": "quick@gmail.com",
+          "amount": 5,
+          "securityQuestion": "What is your pet's name?",
+          "securityAnswer": "Fluffy",
+          "status": "completed",
+          "date": "2024-12-13T03:41:40.090Z"
+        }
+      ]
     },
     {
       "email": "elijahp558@gmail.com",
@@ -14,7 +31,14 @@
       "balance": 784,
       "failedAttempts": 0,
       "failedAttemptsRow": 0,
-      "isLocked": false
+      "isLocked": false,
+      "securityQuestions": [
+        {
+          "question": "What is your mother's maiden name?",
+          "answer": "Smith"
+        }
+      ],
+      "transfers": []
     },
     {
       "email": "ketchup_mayo333@gmail.com",
@@ -22,7 +46,14 @@
       "balance": 347.99,
       "failedAttempts": 0,
       "failedAttemptsRow": 0,
-      "isLocked": false
+      "isLocked": false,
+      "securityQuestions": [
+        {
+          "question": "What city were you born in?",
+          "answer": "New York"
+        }
+      ],
+      "transfers": []
     },
     {
       "email": "jaycob_apply@gmail.com",
@@ -30,15 +61,29 @@
       "balance": 283.38,
       "failedAttempts": 0,
       "failedAttemptsRow": 0,
-      "isLocked": false
+      "isLocked": false,
+      "securityQuestions": [
+        {
+          "question": "What is your favorite color?",
+          "answer": "Magenta"
+        }
+      ],
+      "transfers": []
     },
     {
       "email": "quick@gmail.com",
       "pin": "4763",
-      "balance": 48.38,
+      "balance": 53.38,
       "failedAttempts": 0,
-      "failedAttemptsRow": 10,
-      "isLocked": false
+      "failedAttemptsRow": 6,
+      "isLocked": false,
+      "securityQuestions": [
+        {
+          "question": "What is your childhood nickname?",
+          "answer": "Snail"
+        }
+      ],
+      "transfers": []
     }
   ]
 }

@@ -1,27 +1,26 @@
 const prompt = require('prompt-sync')({ sigint: true });
+const fs = require('fs');
 
 class User {
-    constructor(email, pin, balance = 0, failedAttemptsRow = 0, saveData) {
+    constructor(email, pin, balance = 0, failedAttemptsRow = 0, securityQuestions = [], transfers = []) {
         this.email = email;
         this.pin = pin;
         this.balance = balance;
         this.failedAttempts = 0;
         this.failedAttemptsRow = failedAttemptsRow;
         this.isLocked = false;
-        this.saveData = saveData;
+        this.securityQuestions = securityQuestions;
+        this.transfers = transfers;
     }
 
     authenticate(pin) {
-
         if (this.failedAttemptsRow >= 10) {
             this.isLocked = true;
-            this.saveData();
             console.error("User has failed too many times in a row... Locking user out.");
             return false;
         }
 
         if (this.isLocked) {
-            console.log();
             console.error("Your account is locked due to too many failed attempts.");
             return false;
         }
@@ -31,7 +30,6 @@ class User {
             if (this.pin === pin) {
                 this.failedAttempts = 0;
                 console.log("Login successful.");
-                this.saveData();
                 return true;
             }
 
@@ -40,7 +38,6 @@ class User {
 
             if (this.failedAttempts >= 3) {
                 this.failedAttemptsRow += 1;
-                this.saveData(); 
                 console.error("Too many failed attempts... Exiting user from application.");
                 return false;
             }
@@ -55,42 +52,36 @@ class User {
     }
 
     viewBalance() {
-        console.log();
         console.log(`Your account's balance is $${this.balance}`);
     }
 
     deposit() {
-        let promptDepBal = parseFloat(prompt("Deposit: $"));
+        let depositAmount = parseFloat(prompt("Deposit: $"));
         
-        if (isNaN(promptDepBal) || promptDepBal <= 0) {
-            console.log();
+        if (isNaN(depositAmount) || depositAmount <= 0) {
             console.error("Deposit amount must be a positive number.");
             return;
         }
 
-        this.balance += promptDepBal;
-        console.log();
-        console.log(`Successfully deposited $${promptDepBal}. Your new balance is $${this.balance}`);
+        this.balance += depositAmount;
+        console.log(`Successfully deposited $${depositAmount}. Your new balance is $${this.balance}`);
     }
 
     withdraw() {
-        let promptWithBal = parseFloat(prompt("Withdraw: $"));
+        let withdrawAmount = parseFloat(prompt("Withdraw: $"));
 
-        if (isNaN(promptWithBal) || promptWithBal <= 0) {
-            console.log();
+        if (isNaN(withdrawAmount) || withdrawAmount <= 0) {
             console.error("Withdrawal amount must be a positive number.");
             return;
         }
 
-        if (this.balance < promptWithBal) {
-            console.log();
-            console.error(`Insufficient funds. Your current balance is $${this.balance}, but you tried to withdraw $${promptWithBal}.`);
+        if (this.balance < withdrawAmount) {
+            console.error(`Insufficient funds. Your current balance is $${this.balance}, but you tried to withdraw $${withdrawAmount}.`);
             return;
         }
 
-        this.balance -= promptWithBal;
-        console.log();
-        console.log(`Successfully withdrew $${promptWithBal}. Your new balance is $${this.balance}`);
+        this.balance -= withdrawAmount;
+        console.log(`Successfully withdrew $${withdrawAmount}. Your new balance is $${this.balance}`);
     }
 }
 

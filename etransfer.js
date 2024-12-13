@@ -1,6 +1,5 @@
-
 const fs = require('fs');
-const readline = require('readline-sync');
+const prompt = require('prompt-sync')({ sigint: true });
 
 class Etransfer {
     constructor(sender, recipient, amount, securityQuestion, securityQuestionAnswer) {
@@ -10,108 +9,91 @@ class Etransfer {
         this.securityQuestion = securityQuestion;
         this.securityQuestionAnswer = securityQuestionAnswer;
     }
-       // Method to send E-transfer
+
     sendETransfer(user) {
+        if (!user) {
+            console.error("User object is not provided.");
+            return false;
+        }
+
         if (user.balance >= this.amount) {
-            user.balance -= this.amount; //Deduct amount from users balance
+            user.balance -= this.amount;
+
             const transfer = {
                 sender: this.sender,
                 recipient: this.recipient,
                 amount: this.amount,
                 securityQuestion: this.securityQuestion,
                 securityQuestionAnswer: this.securityQuestionAnswer
-
             };
-            //Checking for exsisting tranfers or setting a new array if file doesn't exist
+
             let data = [];
-            if (fs.existsSync(transfer.json)) {
-            try {
-                data = JSON.parse(fs.readFileSync('transfer.json', 'utf8'));
-            } catch (error) {
-                console.error('Error interperting transfer.json');
+            if (fs.existsSync('transfer.json')) {
+                try {
+                    data = JSON.parse(fs.readFileSync('transfer.json', 'utf8'));
+                } catch (error) {
+                    console.log("Error reading transfer data.");
+                }
             }
-        }
-            
+
             data.push(transfer);
-            try {
-            fs.writeFileSync('transfer.json', JSON.stringify(data, null, 2));
-           console.log(`E-Transfer of $${this.amount} transfered to ${this.recipient}.`);
-             return true
-            } catch(error) {
-                console.error("failed to tranfer");
-                user.balance += this.amount;
-                return false;
-            } 
-    } else {
-        console.log("Insuffent funds");
-        return false;
-    }
-}
-    //Mehod to accept transfer
-    static acceptETransfer(user) {
-        let data = [];
-        if (fs.existsSync(transfer.json)) {
-        try {
-            data = JSON.parse(fs.readFileSync('transfer.json', 'utf8'));
-        } catch (error) {
-            console.error('error interperting transfer.json');
-            return false;
-        }
-        } else {
-            console.log('No pending transfer for user');
-            return false;
-        }
-        
-        
-        const pendingTransfer = data.filter(transfer => transfer.recipient === user.email);
-        
-        if (pendingTransfer.length === 0) {
-            console.log('no pending transfers');
-            return false;
-        }
-
-        console.log("pending transfers");
-        pendingTransfer.forEach((transfer, index) => {
-            console.log(`${index + 1} Amount: $${transfer.amount}, security Question: ${transfer.securityQuestion}`);
-
-        });
-
-        const chosenIndex = parseInt(readline.question('Enter the number of the transfer you want to accept:')) - 1;
-        
-        if (isNaN(chosenIndex)|| chosenIndex < 0 || chosenIndex >= pendingTransfer.length) {
-            console.log('invalid selection');
-            return false;
-        }
-        const chosenTransfer = pendingTransfer[chosenIndex];
-
-        const UserAnswer = readline.question('Answer the security question:');
-      
-        if (UserAnswer === chosenTransfer.securityQuestionAnswer) {
-            user.balance += chosenTransfer.amount; // Adds amount to user balance
-            console.log(`E-transfer of $${chosenTransfer.amount} accpepted. New balance: $${user.balance}`);
-
-
-
-         const updatedTransfers = data.filter(transfer =>
-            !(transfer.sender === chosenTransfer.sender &&
-                transfer.recipient === chosenTransfer.recipient &&
-                transfer.amount === chosenTransfer.amount &&
-                transfer.securityQuestion === chosenTransfer.securityQuestionAnswer)
-            );
 
             try {
-                fs.writeFileSync('transfer.json', JSON.stringify(updatedTransfers, null, 2));
+                fs.writeFileSync('transfer.json', JSON.stringify(data, null, 2));
+                console.log(`Transfer of $${this.amount} to ${this.recipient} was successful.`);
             } catch (error) {
-                console.log('Error updating Transfer.json file');
+                console.log("Error saving transfer data.");
             }
 
             return true;
         } else {
-            console.log("Incorrect answer. transfer not accepted");
+            console.log("Insufficient balance.");
+            return false;
+        }
+    }
+
+    acceptETransfer(user) {
+        if (!user) {
+            console.error("User object is not provided.");
+            return false;
+        }
+
+        let data = [];
+        if (fs.existsSync('transfer.json')) {
+            try {
+                data = JSON.parse(fs.readFileSync('transfer.json', 'utf8'));
+            } catch (error) {
+                console.log("Error reading transfer data.");
+                return false;
+            }
+        }
+
+        const pendingTransfers = data.filter(transfer => transfer.recipient === user.email);
+        if (pendingTransfers.length === 0) {
+            console.log("No pending transfers found.");
+            return false;
+        }
+
+        const selectedTransfer = pendingTransfers[0];
+        console.log(`Transfer of $${selectedTransfer.amount} from ${selectedTransfer.sender}`);
+        const userAnswer = prompt(`${selectedTransfer.securityQuestion}: `);
+
+        if (userAnswer === selectedTransfer.securityQuestionAnswer) {
+            user.balance += selectedTransfer.amount;
+            data = data.filter(transfer => transfer !== selectedTransfer);
+            try {
+                fs.writeFileSync('transfer.json', JSON.stringify(data, null, 2));
+                console.log(`Transfer accepted. Your new balance is $${user.balance}`);
+                return true;
+            } catch (error) {
+                console.log("Error saving transfer data.");
+                return false;
+            }
+        } else {
+            console.log("Incorrect answer. Transfer rejected.");
             return false;
         }
     }
 }
 
-module.exports = Etransfer
-
+module.exports = Etransfer;

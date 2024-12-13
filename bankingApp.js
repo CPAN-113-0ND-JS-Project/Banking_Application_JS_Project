@@ -1,5 +1,6 @@
 const fs = require('fs');
 const User = require('./user');
+const Etransfer = require('./etransfer');
 const prompt = require('prompt-sync')({ sigint: true });
 
 class BankingApp {
@@ -14,7 +15,7 @@ class BankingApp {
             const data = fs.readFileSync('data.json', 'utf8');
             const parsedData = JSON.parse(data);
             this.users = parsedData.users.map(
-                u => new User(u.email, u.pin, u.balance, u.failedAttemptsRow, this.saveData.bind(this))
+                u => new User(u.email, u.pin, u.balance, u.failedAttemptsRow, u.securityQuestions, u.transfers, this.saveData.bind(this))
             );
         } catch (error) {
             console.log("No previous data found. Starting fresh.");
@@ -29,7 +30,9 @@ class BankingApp {
                 balance: u.balance,
                 failedAttempts: u.failedAttempts,
                 failedAttemptsRow: u.failedAttemptsRow,
-                isLocked: u.isLocked
+                isLocked: u.isLocked,
+                securityQuestions: u.securityQuestions,
+                transfers: u.transfers
             }))
         };
 
@@ -63,6 +66,36 @@ class BankingApp {
             case 3: 
                 this.currentUser.viewBalance();
                 break;
+            case 4:
+                const recipientEmail = prompt("Enter recipient's email: ");
+                const amount = parseFloat(prompt("Enter amount to send: $"));
+                const securityQuestion = prompt("Enter a security question: ");
+                const securityQuestionAnswer = prompt("Enter the answer to the security question: ");
+                
+                const transfer = new Etransfer(this.currentUser.email, recipientEmail, amount, securityQuestion, securityQuestionAnswer);
+                const transferSuccess = transfer.sendETransfer(this.currentUser);
+                
+                if (transferSuccess) {
+                    console.log("E-transfer sent successfully.");
+                } else {
+                    console.log("E-transfer failed.");
+                }
+                break;
+            case 5:
+                if (this.currentUser) {
+                    const transferInstance = new Etransfer();
+                    const acceptSuccess = transferInstance.acceptETransfer(this.currentUser);
+                    
+                    if (!acceptSuccess) {
+                        console.log("No pending transfers or failed to accept transfer.");
+                    }
+                } else {
+                    console.log("No current user to accept transfers.");
+                }
+                break;
+            case 6:
+                this.changePin();
+                break;
             case 7:  
                 console.log("Thank you for using the application.");
                 console.log("Exiting now...");
@@ -72,8 +105,17 @@ class BankingApp {
                 console.log("Invalid input. Please try again.");
                 break;
         }
-        this.mainMenu();
-        this.handleUserInput();
+    }
+
+    changePin() {
+        const newPin = prompt("Enter new PIN: ");
+        if (this.currentUser) {
+            this.currentUser.pin = newPin;
+            this.saveData();
+            console.log("PIN successfully changed.");
+        } else {
+            console.log("No current user to change PIN.");
+        }
     }
 
     start() {
@@ -84,18 +126,19 @@ class BankingApp {
 
         if (!user) {
             console.log("Email not found. Creating a new account...");
-            user = new User(email, pin, 0, this.saveData.bind(this));
+            const securityQuestion = prompt("Set a security question: ");
+            const securityQuestionAnswer = prompt("Set an answer to the security question: ");
+            user = new User(email, pin, 0, 0, [securityQuestion], [], this.saveData.bind(this));
             this.users.push(user);
             this.saveData();
         }
 
-        if (user.authenticate(pin)) {
-            console.log("Login successful!");
-            this.currentUser = user;
+        this.currentUser = user;
+        let exit = false;
+        while (!exit) {
             this.mainMenu();
             this.handleUserInput();
         }
-
     }
 }
 
