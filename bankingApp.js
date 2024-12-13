@@ -1,3 +1,4 @@
+// Updated bankingApp.js
 const fs = require('fs');
 const User = require('./user');
 const Etransfer = require('./etransfer');
@@ -55,15 +56,15 @@ class BankingApp {
     }
 
     handleUserInput() {
-        var promptChoice = parseFloat(prompt("Enter a number from [1-7]: "));
+        const promptChoice = parseFloat(prompt("Enter a number from [1-7]: "));
         switch (promptChoice) {
-            case 1: 
+            case 1:
                 this.currentUser.withdraw();
                 break;
-            case 2: 
+            case 2:
                 this.currentUser.deposit();
                 break;
-            case 3: 
+            case 3:
                 this.currentUser.viewBalance();
                 break;
             case 4:
