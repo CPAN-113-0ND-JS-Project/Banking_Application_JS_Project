@@ -1,0 +1,10 @@
+[
+    {
+    "sender": "randomperson@email.com",
+    "recipient": "user.email",
+    "amount": 100,
+    "securityQuestion": "What city do you live in" ,
+    "securityQuestionAnswer" :"Toronto"
+
+    }
+]
