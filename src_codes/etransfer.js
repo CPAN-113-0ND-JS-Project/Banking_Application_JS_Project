@@ -1,4 +1,4 @@
-const { error } = require('console');
+
 const fs = require('fs');
 const readline =require('readline-sync');
 
@@ -13,7 +13,7 @@ class Etransfer {
        // Method to send E-transfer
     sendETransfer(user) {
         if (user.balance >= this.amount) {
-            user.balance -= this.amount;
+            user.balance -= this.amount; //Deduct amount from users balance
             const transfer = {
                 sender: this.sender,
                 recipient: this.recipient,
@@ -22,9 +22,9 @@ class Etransfer {
                 securityQuestionAnswer: this.securityQuestionAnswer
 
             };
-
+            //Checking for exsisting tranfers or setting a new array if file doesn't exist
             let data = [];
-            if (fs.existsSync('transfer.json')) {
+            if (fs.existsSync(transfer.json)) {
             try {
                 data = JSON.parse(fs.readFileSync('transfer.json', 'utf8'));
             } catch (error) {
@@ -87,7 +87,7 @@ class Etransfer {
         const UserAnswer = readline.question('Answer the security question:');
       
         if (UserAnswer === chosenTransfer.securityQuestionAnswer) {
-            user.balance += chosenTransfer.amount;
+            user.balance += chosenTransfer.amount; // Adds amount to user balance
             console.log(`E-transfer of $${chosenTransfer.amount} accpepted. New balance: $${user.balance}`);
 
 
@@ -100,7 +100,7 @@ class Etransfer {
             );
 
             try {
-                fs.writeFileSync('trans.json', JSON.stringify(updatedTransfers, null, 2));
+                fs.writeFileSync('transfer.json', JSON.stringify(updatedTransfers, null, 2));
             } catch (error) {
                 console.log('Error updating Transfer.json file');
             }
