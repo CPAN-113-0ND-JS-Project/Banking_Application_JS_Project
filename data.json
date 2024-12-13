@@ -75,7 +75,6 @@
       "pin": "4763",
       "balance": 53.38,
       "failedAttempts": 0,
-<<<<<<< HEAD
       "failedAttemptsRow": 6,
       "isLocked": false,
       "securityQuestions": [
@@ -85,17 +84,6 @@
         }
       ],
       "transfers": []
-=======
-      "failedAttemptsRow": 10,
-      "isLocked": false
-    },
-    {
-      "email": "elijahp668@gmail.com",
-      "pin": "1234",
-      "balance": 0,
-      "failedAttempts": 0,
-      "isLocked": false
->>>>>>> a7aa3262d566f05a5d42ae7e5258db4cea7dac23
     }
   ]
 }
