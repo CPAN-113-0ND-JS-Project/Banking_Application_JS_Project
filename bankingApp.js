@@ -1,3 +1,4 @@
+// Updated bankingApp.js
 const fs = require('fs');
 const User = require('./user');
 const prompt = require('prompt-sync')({ sigint: true });
@@ -52,18 +53,21 @@ class BankingApp {
     }
 
     handleUserInput() {
-        var promptChoice = parseFloat(prompt("Enter a number from [1-7]: "));
+        const promptChoice = parseFloat(prompt("Enter a number from [1-7]: "));
         switch (promptChoice) {
-            case 1: 
+            case 1:
                 this.currentUser.withdraw();
                 break;
-            case 2: 
+            case 2:
                 this.currentUser.deposit();
                 break;
-            case 3: 
+            case 3:
                 this.currentUser.viewBalance();
                 break;
-            case 7:  
+            case 6:
+                this.changePin();
+                break;
+            case 7:
                 console.log("Thank you for using the application.");
                 console.log("Exiting now...");
                 this.saveData();
@@ -74,6 +78,31 @@ class BankingApp {
         }
         this.mainMenu();
         this.handleUserInput();
+    }
+
+    changePin() {
+        console.log("\nChange PIN:");
+
+        const isSecurePin = (pin) => {
+            const pinRegex = /^\d{4}$/; // 4-digit PIN
+            return pinRegex.test(pin);
+        };
+
+        const newPin = prompt("Enter new PIN: ");
+        if (!isSecurePin(newPin)) {
+            console.log("Error: PIN must be a 4-digit number.");
+            return;
+        }
+
+        const confirmPin = prompt("Re-enter new PIN to confirm: ");
+        if (newPin !== confirmPin) {
+            console.log("Error: PINs do not match. Try again.");
+            return;
+        }
+
+        this.currentUser.pin = newPin;
+        console.log("PIN successfully changed!");
+        this.saveData();
     }
 
     start() {
@@ -95,7 +124,6 @@ class BankingApp {
             this.mainMenu();
             this.handleUserInput();
         }
-
     }
 }
 
