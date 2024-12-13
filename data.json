@@ -42,10 +42,9 @@
     },
     {
       "email": "elijahp668@gmail.com",
-      "pin": "2134",
+      "pin": "1234",
       "balance": 0,
       "failedAttempts": 0,
-      "failedAttemptsRow": 0,
       "isLocked": false
     }
   ]
