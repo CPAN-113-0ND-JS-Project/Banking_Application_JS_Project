@@ -14,7 +14,7 @@ class BankingApp {
             const data = fs.readFileSync('data.json', 'utf8');
             const parsedData = JSON.parse(data);
             this.users = parsedData.users.map(
-                u => new User(u.email, u.pin, u.balance)
+                u => new User(u.email, u.pin, u.balance, u.failedAttemptsRow, this.saveData.bind(this))
             );
         } catch (error) {
             console.log("No previous data found. Starting fresh.");
@@ -28,46 +28,13 @@ class BankingApp {
                 pin: u.pin,
                 balance: u.balance,
                 failedAttempts: u.failedAttempts,
-                locked: u.isLocked
+                failedAttemptsRow: u.failedAttemptsRow,
+                isLocked: u.isLocked
             }))
         };
+
+        console.log("Saving data...");
         fs.writeFileSync('data.json', JSON.stringify(data, null, 2));
-    }
-
-    authenticateUser(email, pin) {
-        let user = this.users.find(u => u.email === email);
-
-        if (!user) {
-            console.log("Email not found. Creating a new account...");
-            user = new User(email, pin, 0); 
-            this.users.push(user);
-            this.saveData();
-            this.currentUser = user;
-            return true;
-        }
-
-        let attempts = 0
-
-        while (attempts <= 3) {
-            if (user.authenticate(pin)) {
-                this.currentUser = user;
-                return true;
-            }
-            attempts++;
-            if (attempts <= 3) {
-                pin = prompt("Incorrect PIN. Try again: "); 
-            }
-        }
-
-        console.error("Too many failed attempts. Forcing user out.")
-
-        if (attempts >= 10)  {
-            console.error("Too many failed attempts has been attempted. Locking user out...")
-            user.isLocked = true;
-            this.saveData();
-        }
-
-        return false;
     }
 
     mainMenu() {
@@ -85,9 +52,7 @@ class BankingApp {
     }
 
     handleUserInput() {
-
-        var promptChoice = parseFloat(prompt("Enter a number from [1-7]: "))
-
+        var promptChoice = parseFloat(prompt("Enter a number from [1-7]: "));
         switch (promptChoice) {
             case 1: 
                 this.currentUser.withdraw();
@@ -98,38 +63,39 @@ class BankingApp {
             case 3: 
                 this.currentUser.viewBalance();
                 break;
-            case 4:
-                break;
-            case 5:
-                break;
-            case 6: 
-                break;
             case 7:  
-                console.log();
-                console.log("Data has been changed and saved.")
+                console.log("Thank you for using the application.");
                 console.log("Exiting now...");
                 this.saveData();
                 process.exit(0);
-                break;
             default:
-                console.log();
-                console.error("Invalid input. Please try again.");
+                console.log("Invalid input. Please try again.");
                 break;
         }
-
         this.mainMenu();
         this.handleUserInput();
     }
 
-    async start() {
+    start() {
         const email = prompt("Enter email: ");
         const pin = prompt("Enter PIN: ");
 
-        if (this.authenticateUser(email, pin)) {
+        let user = this.users.find(u => u.email === email);
+
+        if (!user) {
+            console.log("Email not found. Creating a new account...");
+            user = new User(email, pin, 0, this.saveData.bind(this));
+            this.users.push(user);
+            this.saveData();
+        }
+
+        if (user.authenticate(pin)) {
             console.log("Login successful!");
+            this.currentUser = user;
             this.mainMenu();
             this.handleUserInput();
         }
+
     }
 }
 

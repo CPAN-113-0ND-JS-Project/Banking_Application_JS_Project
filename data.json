@@ -5,28 +5,40 @@
       "pin": "7824",
       "balance": 500,
       "failedAttempts": 0,
-      "locked": false
+      "failedAttemptsRow": 0,
+      "isLocked": false
     },
     {
       "email": "elijahp558@gmail.com",
       "pin": "1234",
       "balance": 784,
       "failedAttempts": 0,
-      "locked": false
+      "failedAttemptsRow": 0,
+      "isLocked": false
     },
     {
       "email": "ketchup_mayo333@gmail.com",
       "pin": "9827",
       "balance": 347.99,
       "failedAttempts": 0,
-      "locked": false
+      "failedAttemptsRow": 0,
+      "isLocked": false
     },
     {
       "email": "jaycob_apply@gmail.com",
       "pin": "4763",
       "balance": 283.38,
       "failedAttempts": 0,
-      "locked": false
+      "failedAttemptsRow": 0,
+      "isLocked": false
+    },
+    {
+      "email": "quick@gmail.com",
+      "pin": "4763",
+      "balance": 48.38,
+      "failedAttempts": 0,
+      "failedAttemptsRow": 10,
+      "isLocked": false
     }
   ]
 }
