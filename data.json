@@ -39,6 +39,14 @@
       "failedAttempts": 0,
       "failedAttemptsRow": 10,
       "isLocked": false
+    },
+    {
+      "email": "elijahp668@gmail.com",
+      "pin": "1234",
+      "balance": 0,
+      "failedAttempts": 0,
+      "failedAttemptsRow": 0,
+      "isLocked": false
     }
   ]
 }
